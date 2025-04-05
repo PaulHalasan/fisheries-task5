@@ -1,14 +1,13 @@
 import React from "react";
 import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
 import { useRouter } from "expo-router"; // ✅ Use Expo Router for navigation
-import { Image } from "react-native";
 
 
 export default function LandingPage() {
   const router = useRouter();
 
   const handleSignUp = () => {
-    router.push("/Home");
+    router.replace("/(tabs)/Home"); // 👈 Navigates into the tab layout
   };
 
   return (
