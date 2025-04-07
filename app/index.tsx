@@ -1,32 +1,62 @@
-import React from "react";
-import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
-import { useRouter } from "expo-router"; // ✅ Use Expo Router for navigation
-
+import React, { useState } from "react";
+import {
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  StatusBar,
+} from "react-native";
+import { useRouter } from "expo-router";
 
 export default function LandingPage() {
   const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleSignUp = () => {
-    router.replace("/(tabs)/Home"); // 👈 Navigates into the tab layout
+  const handleLogin = () => {
+    // Add login logic here
+    router.replace("/(tabs)/Home");
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome to Our App!</Text>
+      <StatusBar barStyle="light-content" backgroundColor="#0927ad" />
 
-      {/* Default Sign Up Button */}
-      <TouchableOpacity style={styles.button} onPress={handleSignUp}>
-        <Text style={styles.buttonText}>Sign Up</Text>
+      <Text style={styles.title}>Welcome Back</Text>
+      <Text style={styles.subtitle}>Sign in to your account</Text>
+
+      <TextInput
+        placeholder="Email"
+        placeholderTextColor="#ccc"
+        value={email}
+        onChangeText={setEmail}
+        style={styles.input}
+        keyboardType="email-address"
+        autoCapitalize="none"
+      />
+
+      <TextInput
+        placeholder="Password"
+        placeholderTextColor="#ccc"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+        style={styles.input}
+      />
+
+      <TouchableOpacity style={styles.primaryButton} onPress={handleLogin}>
+        <Text style={styles.primaryButtonText}>Log In</Text>
       </TouchableOpacity>
 
-      {/* Sign Up with Facebook Button */}
-      <TouchableOpacity style={[styles.button, styles.facebookButton]} onPress={handleSignUp}>
-        <Text style={styles.buttonText}>Sign up with Facebook</Text>
+      <Text style={styles.orText}>or continue with</Text>
+
+      <TouchableOpacity style={styles.facebookButton} onPress={handleLogin}>
+        <Text style={styles.altButtonText}>Continue with Facebook</Text>
       </TouchableOpacity>
 
-      {/* Sign Up with Google Button */}
-      <TouchableOpacity style={[styles.button, styles.googleButton]} onPress={handleSignUp}>
-        <Text style={styles.buttonText}>Sign up with Google</Text>
+      <TouchableOpacity style={styles.googleButton} onPress={handleLogin}>
+        <Text style={styles.googleButtonText}>Continue with Google</Text>
       </TouchableOpacity>
     </View>
   );
@@ -35,33 +65,73 @@ export default function LandingPage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#0927ad",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f5f5f5",
+    paddingHorizontal: 30,
   },
   title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
+    fontSize: 34,
+    color: "#ffffff",
+    fontWeight: "700",
+    marginBottom: 8,
   },
-  button: {
-    backgroundColor: "#007BFF",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    marginVertical: 10,
-    width: "80%",
+  subtitle: {
+    fontSize: 16,
+    color: "#cfd9ff",
+    marginBottom: 30,
+  },
+  input: {
+    width: "100%",
+    backgroundColor: "#1c3eea",
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    color: "#fff",
+    marginBottom: 16,
+    fontSize: 16,
+  },
+  primaryButton: {
+    backgroundColor: "#ffbf00",
+    paddingVertical: 14,
+    borderRadius: 12,
+    width: "100%",
     alignItems: "center",
+    marginBottom: 24,
+  },
+  primaryButtonText: {
+    color: "#000",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  orText: {
+    color: "#ffffff",
+    marginBottom: 16,
+    fontSize: 14,
   },
   facebookButton: {
-    backgroundColor: "#4267B2", // Facebook blue
+    backgroundColor: "#3b5998",
+    paddingVertical: 14,
+    borderRadius: 12,
+    width: "100%",
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  altButtonText: {
+    color: "#ffffff",
+    fontSize: 16,
+    fontWeight: "600",
   },
   googleButton: {
-    backgroundColor: "#DB4437", // Google red
+    backgroundColor: "#ffffff",
+    paddingVertical: 14,
+    borderRadius: 12,
+    width: "100%",
+    alignItems: "center",
   },
-  buttonText: {
-    color: "#fff",
+  googleButtonText: {
+    color: "#DB4437",
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: "600",
   },
 });

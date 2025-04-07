@@ -1,187 +1,448 @@
 import React, { useState } from "react";
-import { Text, View, TouchableOpacity, StyleSheet, TextInput, ScrollView } from "react-native";
+import { Text, View, TouchableOpacity, StyleSheet, TextInput, ScrollView, Image } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { LineChart } from "react-native-chart-kit";
 
 export default function Home() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState("Hourly"); // State to track the active tab
+  const [activeTab, setActiveTab] = useState("Hourly");
   const [activeFishingTab, setActiveFishingTab] = useState("Nearby");
+  const [activeTimeTab, setActiveTimeTab] = useState("Now");
+  const [activeAnalyticsTab, setActiveAnalyticsTab] = useState("Weekly");
 
   const handleLogNewCatch = () => {
-    router.push("/LogPage"); // Navigate to LogPage
+    router.push("/LogPage");
+  };
+
+  // Weather forecast data
+  const weatherData = [
+    { 
+      time: "12 AM", 
+      temp: "19°", 
+      icon: require("../../assets/weather/cloudy.png"), 
+      precipitation: "30%", 
+      active: false 
+    },
+    { 
+      time: "Now", 
+      temp: "19°", 
+      icon: require("../../assets/weather/cloudy.png"), 
+      precipitation: "", 
+      active: true 
+    },
+    { 
+      time: "2 AM", 
+      temp: "18°", 
+      icon: require("../../assets/weather/rainy-day.png"), 
+      precipitation: "", 
+      active: false 
+    },
+    { 
+      time: "3 AM", 
+      temp: "19°", 
+      icon: require("../../assets/weather/rainy-day.png"), 
+      precipitation: "", 
+      active: false 
+    },
+    { 
+      time: "4 AM", 
+      temp: "19°", 
+      icon: require("../../assets/weather/cloudy.png"), 
+      precipitation: "", 
+      active: false 
+    },
+  ];
+
+  // Fishing spots data
+  const fishingSpots = [
+    { 
+      name: "Blue Harbor", 
+      distance: "3.2 mi", 
+      fishTypes: "Tuna, Mackarel", 
+      bestTime: "2AM - 6AM", 
+      tide: "Rising",
+      tideColor: "#4CD964",
+      percentage: "78%"
+    },
+    { 
+      name: "Rocky Point", 
+      distance: "5.7 mi", 
+      fishTypes: "Skipjack, Snapper", 
+      bestTime: "7PM - 11PM", 
+      tide: "High",
+      tideColor: "#FF9500",
+      percentage: "65%"
+    },
+    { 
+      name: "Sunset Pier", 
+      distance: "4.2 mi", 
+      fishTypes: "Flounder, Crab", 
+      bestTime: "4PM - 9PM", 
+      tide: "Low",
+      tideColor: "#FF3B30",
+      percentage: "53%"
+    }
+  ];
+
+  // Best catch times data with fish names and images
+  const bestCatchTimes = [
+    { 
+      time: "12 AM", 
+      fish: "Flounder", 
+      chance: "65%", 
+      active: false, 
+      color: "#FFD700",
+      image: require("../../assets/fish/flounder.png")
+    },
+    { 
+      time: "Now", 
+      fish: "Clownfish", 
+      chance: "15%", 
+      active: true, 
+      color: "#FF6347",
+      image: require("../../assets/fish/clownfish.png")
+    },
+    { 
+      time: "2 AM", 
+      fish: "Tuna", 
+      chance: "75%", 
+      active: false, 
+      color: "#00BFFF",
+      image: require("../../assets/fish/yellowfin-tuna.png")
+    },
+    { 
+      time: "3 AM", 
+      fish: "Bass", 
+      chance: "85%", 
+      active: false, 
+      color: "#808080",
+      image: require("../../assets/fish/bass.png")
+    },
+    { 
+      time: "4 AM", 
+      fish: "Crab", 
+      chance: "88%", 
+      active: false, 
+      color: "#FF4500",
+      image: require("../../assets/fish/crab.png")
+    },
+  ];
+
+  // Tide data for chart
+  const tideData = {
+    labels: ["12AM", "6AM", "12PM", "6PM", "12AM"],
+    datasets: [
+      {
+        data: [43.91, 52.14, 39.57, 50.86, 47.5],
+        color: () => `rgba(255, 204, 0, 1)`,
+        strokeWidth: 2
+      }
+    ]
+  };
+
+  // Catch analytics data
+  const catchAnalyticsData = {
+    labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+    datasets: [
+      {
+        data: [90, 80, 90, 60, 50, 10, 55],
+        color: () => `rgba(50, 100, 200, 0.6)`,
+        strokeWidth: 2
+      },
+      {
+        data: [25, 45, 55, 30, 55, 85, 40],
+        color: () => `rgba(255, 204, 0, 0.6)`,
+        strokeWidth: 2
+      }
+    ]
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {/* Weather Container */}
-      <View style={styles.weatherContainer}>
-        <Text style={styles.weatherHeader}>Weather</Text>
-        <View style={styles.searchBox}>
-          <Ionicons name="search" size={20} color="#888" style={styles.searchIcon} />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search for a city or municipality"
-            placeholderTextColor="#888"
-          />
-        </View>
-
-        {/* Tabs for Hourly and Weekly Forecast */}
-        <View style={styles.tabsContainer}>
-          <TouchableOpacity
-            style={[styles.tab, activeTab === "Hourly" && styles.activeTab]}
-            onPress={() => setActiveTab("Hourly")}
-          >
-            <Text style={[styles.tabText, activeTab === "Hourly" && styles.activeTabText]}>
-              Hourly Forecast
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.tab, activeTab === "Weekly" && styles.activeTab]}
-            onPress={() => setActiveTab("Weekly")}
-          >
-            <Text style={[styles.tabText, activeTab === "Weekly" && styles.activeTabText]}>
-              Weekly Forecast
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Content for Hourly and Weekly Forecast */}
-        {activeTab === "Hourly" ? (
-          <View style={styles.forecastContainer}>
-            <Text style={styles.forecastText}>
-              <Ionicons name="sunny" size={16} color="#FFA500" /> 10:00 AM - Sunny, 28°C
-            </Text>
-            <Text style={styles.forecastText}>
-              <Ionicons name="cloudy" size={16} color="#888" /> 11:00 AM - Cloudy, 27°C
-            </Text>
-            <Text style={styles.forecastText}>
-              <Ionicons name="rainy" size={16} color="#00BFFF" /> 12:00 PM - Rainy, 25°C
-            </Text>
-          </View>
-        ) : (
-          <View style={styles.forecastContainer}>
-            <Text style={styles.forecastText}>
-              <Ionicons name="sunny" size={16} color="#FFA500" /> Monday - Sunny, High: 30°C, Low: 22°C
-            </Text>
-            <Text style={styles.forecastText}>
-              <Ionicons name="cloudy" size={16} color="#888" /> Tuesday - Cloudy, High: 28°C, Low: 21°C
-            </Text>
-            <Text style={styles.forecastText}>
-              <Ionicons name="rainy" size={16} color="#00BFFF" /> Wednesday - Rainy, High: 26°C, Low: 20°C
-            </Text>
-          </View>
-        )}
-      </View>
-
-      {/* Log New Catch Button */}
-      <TouchableOpacity style={styles.button} onPress={handleLogNewCatch}>
-        <Ionicons name="add-circle-outline" size={24} color="white" />
-        <Text style={styles.buttonText}>Log New Catch</Text>
-      </TouchableOpacity>
-
-      {/* Fishing Spot Container */}
-      <View style={styles.fishingSpotContainer}>
-        <Text style={styles.fishingSpotHeader}>Fishing Spot</Text>
-        <View style={styles.searchBox}>
-          <Ionicons name="search" size={20} color="#888" style={styles.searchIcon} />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search for a fishing spot"
-            placeholderTextColor="#888"
-          />
-        </View>
-
-        {/* Tabs for Nearby Spots and Favorites */}
-        <View style={styles.tabsContainer}>
-          <TouchableOpacity
-            style={[styles.tab, activeFishingTab === "Nearby" && styles.activeTab]}
-            onPress={() => setActiveFishingTab("Nearby")}
-          >
-            <Text style={[styles.tabText, activeFishingTab === "Nearby" && styles.activeTabText]}>
-              Nearby Spots
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.tab, activeFishingTab === "Favorites" && styles.activeTab]}
-            onPress={() => setActiveFishingTab("Favorites")}
-          >
-            <Text style={[styles.tabText, activeFishingTab === "Favorites" && styles.activeTabText]}>
-              Favorites
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Fishing Spot Details */}
-        {activeFishingTab === "Nearby" ? (
-          <View style={styles.spotContainer}>
-            <Text style={styles.spotName}>Lake Paradise</Text>
-            <Text style={styles.spotDetail}>Distance: 5 km</Text>
-            <Text style={styles.spotDetail}>Fish Types: Bass, Trout</Text>
-            <Text style={styles.spotDetail}>Best Time: 6:00 AM - 9:00 AM</Text>
-            <View style={[styles.tideBadge, styles.risingTide]}>
-              <Text style={styles.tideText}>Rising Tide</Text>
+    <View style={styles.mainContainer}>  
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.container}>
+          {/* Weather Container */}
+          <View style={styles.blueContainer}>
+            <Text style={styles.headerText}>Weather</Text>
+            
+            <View style={styles.searchBox}>
+              <Ionicons name="search" size={20} color="#fff" style={styles.searchIcon} />
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Search for a city or airport"
+                placeholderTextColor="#8AA1D0"
+              />
             </View>
-            <TouchableOpacity style={styles.directionsButton}>
-              <Ionicons name="map" size={16} color="white" />
-              <Text style={styles.directionsButtonText}>Directions</Text>
+
+            {/* Tabs for Hourly and Weekly Forecast */}
+            <View style={styles.tabsContainer}>
+              <TouchableOpacity
+                style={[styles.weatherTab, activeTab === "Hourly" && styles.activeWeatherTab]}
+                onPress={() => setActiveTab("Hourly")}
+              >
+                <Text style={[styles.weatherTabText, activeTab === "Hourly" && styles.activeWeatherTabText]}>
+                  Hourly Forecast
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.weatherTab, activeTab === "Weekly" && styles.activeWeatherTab]}
+                onPress={() => setActiveTab("Weekly")}
+              >
+                <Text style={[styles.weatherTabText, activeTab === "Weekly" && styles.activeWeatherTabText]}>
+                  Weekly Forecast
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Weather Forecast Cards */}
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.weatherCardsContainer}>
+              {weatherData.map((item, index) => (
+                <View 
+                  key={index} 
+                  style={[
+                    styles.weatherCard, 
+                    item.active && styles.activeWeatherCard
+                  ]}
+                >
+                  <Text style={styles.weatherCardTime}>{item.time}</Text>
+                  <Image source={item.icon} style={styles.weatherIcon} />
+                  {item.precipitation && <Text style={styles.precipitationText}>{item.precipitation}</Text>}
+                  <Text style={styles.temperatureText}>{item.temp}</Text>
+                </View>
+              ))}
+            </ScrollView>
+
+            {/* Log New Catch Button */}
+            <TouchableOpacity style={styles.logButton} onPress={handleLogNewCatch}>
+              <Ionicons name="add-circle-outline" size={24} color="white" />
+              <Text style={styles.logButtonText}>Log New Catch</Text>
             </TouchableOpacity>
           </View>
-        ) : (
-          <View style={styles.spotContainer}>
-            <Text style={styles.spotName}>Ocean Breeze</Text>
-            <Text style={styles.spotDetail}>Distance: 10 km</Text>
-            <Text style={styles.spotDetail}>Fish Types: Salmon, Tuna</Text>
-            <Text style={styles.spotDetail}>Best Time: 4:00 PM - 7:00 PM</Text>
-            <View style={[styles.tideBadge, styles.highTide]}>
-              <Text style={styles.tideText}>High Tide</Text>
-            </View>
-            <TouchableOpacity style={styles.directionsButton}>
-              <Ionicons name="map" size={16} color="white" />
-              <Text style={styles.directionsButtonText}>Directions</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      </View>
 
-    </ScrollView>
+          {/* Fishing Spots Container */}
+          <View style={styles.blueContainer}>
+            <View style={styles.searchBox}>
+              <Ionicons name="search" size={20} color="#fff" style={styles.searchIcon} />
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Search for a fishing spot"
+                placeholderTextColor="#8AA1D0"
+              />
+            </View>
+
+            {/* Tabs for Nearby Spots and Favorites */}
+            <View style={styles.tabsContainer}>
+              <TouchableOpacity
+                style={[styles.weatherTab, activeFishingTab === "Nearby" && styles.activeWeatherTab]}
+                onPress={() => setActiveFishingTab("Nearby")}
+              >
+                <Text style={[styles.weatherTabText, activeFishingTab === "Nearby" && styles.activeWeatherTabText]}>
+                  Nearby spot
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.weatherTab, activeFishingTab === "Favorites" && styles.activeWeatherTab]}
+                onPress={() => setActiveFishingTab("Favorites")}
+              >
+                <Text style={[styles.weatherTabText, activeFishingTab === "Favorites" && styles.activeWeatherTabText]}>
+                  Favorites
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Fishing Spot Cards */}
+            {fishingSpots.map((spot, index) => (
+              <View key={index} style={styles.fishingSpotCard}>
+                <View style={styles.fishingSpotHeader}>
+                  <Text style={styles.fishingSpotName}>{spot.name}</Text>
+                  <Text style={styles.fishingSpotDistance}>{spot.distance}</Text>
+                </View>
+                
+                <View style={styles.fishingSpotDetails}>
+                  <Text style={styles.fishingSpotText}>Current: {spot.fishTypes}</Text>
+                  <View style={[styles.percentageBadge, {backgroundColor: spot.tideColor}]}>
+                    <Text style={styles.percentageText}>{spot.percentage}</Text>
+                  </View>
+                </View>
+                
+                <View style={styles.fishingSpotDetails}>
+                  <Text style={styles.fishingSpotText}>Best time to catch: {spot.bestTime}</Text>
+                  <Text style={styles.tideText}>Tide: <Text style={{color: spot.tideColor}}>{spot.tide}</Text></Text>
+                </View>
+                
+                <View style={styles.fishingSpotActions}>
+                  <TouchableOpacity style={styles.directionsButton}>
+                    <Ionicons name="navigate" size={16} color="white" />
+                    <Text style={styles.directionsText}>Directions</Text>
+                  </TouchableOpacity>
+                  
+                  <TouchableOpacity>
+                    <Text style={styles.seeMoreText}>See more..</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ))}
+          </View>
+
+          {/* Best Catch Times Container */}
+          <View style={styles.blueContainer}>
+            <Text style={styles.headerText}>Best Catch Times</Text>
+            
+            {/* Fish Time Cards with Images */}
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.weatherCardsContainer}>
+              {bestCatchTimes.map((item, index) => (
+                <View 
+                  key={index} 
+                  style={[
+                    styles.weatherCard, 
+                    item.active && styles.activeWeatherCard
+                  ]}
+                >
+                  <Text style={styles.weatherCardTime}>{item.time}</Text>
+                  <Image source={item.image} style={styles.fishImage} />
+                  <Text style={styles.fishNameText}>{item.fish}</Text>
+                  <Text style={styles.temperatureText}>{item.chance}</Text>
+                </View>
+              ))}
+            </ScrollView>
+            
+            {/* Tide Forecast */}
+            <View style={styles.tideContainer}>
+              <View style={styles.centeredHeader}>
+                <Text style={styles.subHeaderText}>Tide Forecast</Text>
+                <Text style={styles.tideTimeText}>Next High Tide: 4:35PM</Text>
+              </View>
+              
+              <LineChart
+                data={tideData}
+                width={350}
+                height={150}
+                chartConfig={{
+                  backgroundGradientFrom: "#1E4289",
+                  backgroundGradientTo: "#1E4289",
+                  decimalPlaces: 0,
+                  color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                  labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                  style: {
+                    borderRadius: 0
+                  },
+                  propsForDots: {
+                    r: "5",
+                    strokeWidth: "2",
+                    stroke: "#ffa726"
+                  }
+                }}
+                bezier
+                style={styles.chart}
+              />
+              
+              <View style={styles.legendContainer}>
+                <Ionicons name="arrow-forward" size={14} color="yellow" />
+                <Text style={styles.legendText}>High tide chance</Text>
+              </View>
+            </View>
+          </View>
+          
+          {/* Catch Analytics Container */}
+          <View style={styles.blueContainer}>
+            <View style={styles.centeredHeader}>
+              <Text style={styles.headerText}>Catch Analytics</Text>
+              <TouchableOpacity 
+                style={[
+                  styles.analyticsToggle,
+                  activeAnalyticsTab === "Weekly" && styles.activeAnalyticsToggle
+                ]}
+              >
+                <Text style={styles.analyticsToggleText}>Weekly</Text>
+              </TouchableOpacity>
+            </View>
+            
+            <LineChart
+              data={catchAnalyticsData}
+              width={350}
+              height={220}
+              chartConfig={{
+                backgroundGradientFrom: "#fff",
+                backgroundGradientTo: "#fff",
+                decimalPlaces: 0,
+                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                style: {
+                  borderRadius: 16
+                },
+                propsForDots: {
+                  r: "5",
+                  strokeWidth: "2"
+                }
+              }}
+              bezier
+              style={styles.analyticsChart}
+            />
+            
+            <View style={styles.yearLegend}>
+              <View style={styles.legendItem}>
+                <View style={[styles.legendDot, {backgroundColor: "rgb(50, 100, 200)"}]} />
+                <Text style={styles.yearText}>2021</Text>
+              </View>
+              <View style={styles.legendItem}>
+                <View style={[styles.legendDot, {backgroundColor: "rgb(255, 204, 0)"}]} />
+                <Text style={styles.yearText}>2020</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+    backgroundColor: "#0D2B67",
+  },
+  scrollView: {
+    flex: 1,
+    backgroundColor: "#0D2B67",
+  },
   container: {
-    flexGrow: 1,
-    justifyContent: "center",
+    flex: 1,
     alignItems: "center",
-    backgroundColor: "#f5f5f5",
-    paddingHorizontal: 20,
+    justifyContent: "flex-start",
+    paddingBottom: 70, // Added padding for nav bar
   },
-  weatherContainer: {
+  blueContainer: {
     width: "100%",
-    marginBottom: 20,
-    backgroundColor: "#fff",
     padding: 15,
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
-  },
-  weatherHeader: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#333",
     marginBottom: 10,
+  },
+  headerText: {
+    fontSize: 18,
+    fontWeight: "500",
+    color: "white",
+    marginBottom: 10,
+  },
+  subHeaderText: {
+    fontSize: 16,
+    fontWeight: "500",
+    color: "white",
+  },
+  centeredHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10,
+    paddingHorizontal: 5,
   },
   searchBox: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#f0f0f0",
-    borderRadius: 5,
+    backgroundColor: "#1E4289",
+    borderRadius: 10,
     paddingHorizontal: 10,
     height: 40,
-    marginBottom: 15,
+    marginVertical: 10,
   },
   searchIcon: {
     marginRight: 5,
@@ -189,126 +450,251 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 16,
-    color: "#333",
+    color: "white",
   },
   tabsContainer: {
     flexDirection: "row",
-    justifyContent: "space-around",
     marginBottom: 15,
+    justifyContent: "space-between",
   },
-  tab: {
+  weatherTab: {
     flex: 1,
-    paddingVertical: 10,
     alignItems: "center",
+    paddingVertical: 8,
     borderBottomWidth: 2,
     borderBottomColor: "transparent",
   },
-  activeTab: {
-    borderBottomColor: "#007BFF",
+  activeWeatherTab: {
+    borderBottomColor: "white",
   },
-  tabText: {
-    fontSize: 16,
-    color: "#888",
-  },
-  activeTabText: {
-    color: "#007BFF",
-    fontWeight: "bold",
-  },
-  forecastContainer: {
-    marginTop: 10,
-  },
-  forecastText: {
+  weatherTabText: {
     fontSize: 14,
-    color: "#333",
-    marginBottom: 5,
+    color: "#8AA1D0",
   },
-  fishingSpotContainer: {
-    width: "100%",
-    marginBottom: 20,
-    backgroundColor: "#fff",
-    padding: 15,
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
+  activeWeatherTabText: {
+    color: "white",
   },
-  fishingSpotHeader: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 10,
-  },
-  spotContainer: {
-    marginTop: 10,
-    padding: 10,
-    backgroundColor: "#f9f9f9",
-    borderRadius: 10,
+  weatherCardsContainer: {
+    flexDirection: "row",
     marginBottom: 15,
   },
-  spotName: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 5,
+  weatherCard: {
+    width: 70,
+    height: 130,
+    backgroundColor: "#1E4289",
+    borderRadius: 20,
+    marginRight: 10,
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 15,
   },
-  spotDetail: {
-    fontSize: 14,
-    color: "#555",
-    marginBottom: 5,
+  activeWeatherCard: {
+    backgroundColor: "#4963AC",
   },
-  tideBadge: {
-    alignSelf: "flex-start",
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderRadius: 5,
-    marginTop: 5,
+  weatherCardTime: {
+    color: "white",
+    fontSize: 13,
   },
-  risingTide: {
-    backgroundColor: "green",
+  weatherIcon: {
+    width: 32,
+    height: 32,
+    marginVertical: 5,
   },
-  highTide: {
-    backgroundColor: "orange",
-  },
-  lowTide: {
-    backgroundColor: "red",
-  },
-  tideText: {
+  precipitationText: {
     color: "white",
     fontSize: 12,
+  },
+  temperatureText: {
+    color: "white",
+    fontSize: 16,
     fontWeight: "bold",
+  },
+  fishImage: {
+    width: 32,
+    height: 32,
+    marginVertical: 3,
+  },
+  fishNameText: {
+    color: "white",
+    fontSize: 11,
+    textAlign: "center",
+  },
+  logButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "transparent",
+    borderWidth: 1,
+    borderColor: "white",
+    borderRadius: 30,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    marginTop: 5,
+  },
+  logButtonText: {
+    color: "white",
+    marginLeft: 8,
+    fontSize: 16,
+  },
+  fishingSpotCard: {
+    backgroundColor: "#1E4289",
+    borderRadius: 15,
+    padding: 15,
+    marginBottom: 10,
+  },
+  fishingSpotHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  fishingSpotName: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "white",
+  },
+  fishingSpotDistance: {
+    fontSize: 14,
+    color: "white",
+  },
+  fishingSpotDetails: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 5,
+  },
+  fishingSpotText: {
+    fontSize: 14,
+    color: "white",
+  },
+  tideText: {
+    fontSize: 14,
+    color: "white",
+  },
+  fishingSpotActions: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 10,
   },
   directionsButton: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#007BFF",
+    backgroundColor: "#0D2B67",
     paddingVertical: 8,
-    paddingHorizontal: 15,
+    paddingHorizontal: 12,
     borderRadius: 5,
-    marginTop: 10,
-    width: "35%",
   },
-  directionsButtonText: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: "bold",
+  directionsText: {
+    color: "white",
     marginLeft: 5,
+    fontSize: 14,
   },
-  button: {
+  seeMoreText: {
+    color: "white",
+    fontSize: 14,
+  },
+  percentageBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 15,
+  },
+  percentageText: {
+    color: "white",
+    fontSize: 12,
+    fontWeight: "bold",
+  },
+  tideContainer: {
+    marginVertical: 15,
+    alignItems: "center",
+  },
+  tideHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 10,
+    width: "100%",
+  },
+  tideTimeText: {
+    color: "white",
+    fontSize: 14,
+  },
+  chart: {
+    marginVertical: 8,
+    borderRadius: 16,
+  },
+  legendContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#007BFF",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    marginTop: 20,
-    marginBottom: 30,
   },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
+  legendText: {
+    color: "white",
+    marginLeft: 5,
+    fontSize: 12,
+  },
+  analyticsHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 15,
+  },
+  analyticsToggle: {
+    backgroundColor: "#FFBF00",
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    borderRadius: 15,
+  },
+  activeAnalyticsToggle: {
+    backgroundColor: "#FFBF00",
+  },
+  analyticsToggleText: {
+    color: "black",
     fontWeight: "bold",
-    marginLeft: 10,
+  },
+  analyticsChart: {
+    marginHorizontal: -15,
+    borderRadius: 16,
+    marginBottom: 10,
+    alignSelf: "center",
+  },
+  yearLegend: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 5,
+  },
+  legendItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginHorizontal: 10,
+  },
+  legendDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    marginRight: 5,
+  },
+  yearText: {
+    color: "white",
+    fontSize: 14,
+  },
+  navBar: {
+    flexDirection: "row",
+    backgroundColor: "#0D2B67",
+    height: 60,
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 100,
+    borderTopWidth: 1,
+    borderTopColor: "#1E4289",
+    justifyContent: "space-around",
+    alignItems: "center",
+    paddingHorizontal: 10,
+  },
+  navButton: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    height: "100%",
   },
 });
