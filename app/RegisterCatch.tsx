@@ -6,11 +6,15 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  SafeAreaView,
+  StatusBar,
+  Image,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
+import { useRouter } from "expo-router";
 
-// 👇 Clean Dropdown Component
+// Clean Dropdown Component
 function CleanDropdownPicker({
   options,
   selected,
@@ -29,9 +33,9 @@ function CleanDropdownPicker({
         style={styles.dropdownButton}
       >
         <Text style={styles.dropdownButtonText}>
-          {selected || "Select catch source"}
+          {selected.toLowerCase() || "Select catch source"}
         </Text>
-        <Ionicons name={showOptions ? "chevron-up" : "chevron-down"} size={20} />
+        <Ionicons name={showOptions ? "chevron-up" : "chevron-down"} size={20} color="#1a56a5" />
       </TouchableOpacity>
 
       {showOptions && (
@@ -55,149 +59,177 @@ function CleanDropdownPicker({
 }
 
 export default function RegisterCatch() {
+  const router = useRouter();
   const [catchSource, setCatchSource] = useState("Pond");
   const [redTide, setRedTide] = useState(false);
   const [compliance, setCompliance] = useState(false);
-  const [catchDateTime, setCatchDateTime] = useState(""); // Single text input for date and time
+  const [catchDateTime, setCatchDateTime] = useState("-/-/- --:--");
+  const [minSize, setMinSize] = useState("");
+  const [maxSize, setMaxSize] = useState("");
 
   const handleSubmit = () => {
-    // Placeholder for form submission logic
     console.log("Catch log submitted");
+    router.push("/LogPage");
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Register Catch</Text>
+    <SafeAreaView style={styles.mainContainer}>
+      <StatusBar barStyle="light-content" backgroundColor="#1a56a5" />
 
-      {/* Catch Source Dropdown */}
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Catch Source</Text>
-        <CleanDropdownPicker
-          options={["Pond", "River", "Sea", "Lake"]}
-          selected={catchSource}
-          onSelect={setCatchSource}
-        />
-      </View>
-
-      {/* Location on Map */}
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Location on Map</Text>
-        <View style={styles.mapPlaceholder}>
-          <Ionicons name="map" size={50} color="#888" />
-          <Text style={styles.mapText}>Map integration placeholder</Text>
+      <ScrollView contentContainerStyle={styles.container}>
+        {/* Catch Source Dropdown */}
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Catch Source</Text>
+          <CleanDropdownPicker
+            options={["Pond", "River", "Sea", "Lake"]}
+            selected={catchSource}
+            onSelect={setCatchSource}
+          />
         </View>
-      </View>
 
-      {/* Fish Species */}
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Fish Species</Text>
-        <TextInput style={styles.input} placeholder="Enter fish species" />
-      </View>
-
-      {/* Total Weight */}
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Total Weight (kg)</Text>
-        <TextInput style={styles.input} placeholder="Enter total weight" keyboardType="numeric" />
-      </View>
-
-      {/* Size Range */}
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Size Range (cm)</Text>
-        <View style={styles.sizeRangeContainer}>
-          <TextInput style={styles.sizeInput} placeholder="Min" keyboardType="numeric" />
-          <TextInput style={styles.sizeInput} placeholder="Max" keyboardType="numeric" />
+        {/* Location on Map */}
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Location on Map</Text>
+          <View style={styles.mapContainer}>
+            <Image
+              source={require("../assets/maps.png")}
+              style={styles.mapImage}
+              defaultSource={require("../assets/maps.png")}
+            />
+          </View>
         </View>
-      </View>
 
-      {/* Catch Date and Time */}
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Catch Date and Time</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter date and time (e.g., 2025-04-05 14:30)"
-          value={catchDateTime}
-          onChangeText={setCatchDateTime}
-        />
-      </View>
-
-      {/* Depth of Catch */}
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Depth of Catch (m)</Text>
-        <TextInput style={styles.input} placeholder="Enter depth" keyboardType="numeric" />
-      </View>
-
-      {/* Upload Documents */}
-      <View style={styles.formGroup}>
-        <Text style={styles.label}>Upload Documents</Text>
-        <TouchableOpacity style={styles.uploadButton}>
-          <Ionicons name="cloud-upload-outline" size={20} color="#fff" />
-          <Text style={styles.uploadButtonText}>Upload Documents</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Checkboxes */}
-      <View style={styles.formGroup}>
-        <View style={styles.checkboxContainer}>
-          <Checkbox value={redTide} onValueChange={setRedTide} />
-          <Text style={styles.checkboxLabel}>Red Tide present during catch</Text>
+        {/* Fish Species */}
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Species of Fish</Text>
+          <TextInput style={styles.input} placeholder="Enter fish species" />
         </View>
-        <View style={styles.checkboxContainer}>
-          <Checkbox value={compliance} onValueChange={setCompliance} />
-          <Text style={styles.checkboxLabel}>
-            I confirm this catch complies with fishing regulations (no endangered / gravid marine life)
-          </Text>
-        </View>
-      </View>
 
-      {/* Submit Button */}
+        {/* Total Weight */}
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Total Weight (kg)</Text>
+          <TextInput style={styles.input} placeholder="Enter total weight" keyboardType="numeric" />
+        </View>
+
+        {/* Size Range */}
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Size Range (cm)</Text>
+          <View style={styles.sizeRangeContainer}>
+            <TextInput
+              style={styles.sizeInput}
+              placeholder="Min"
+              keyboardType="numeric"
+              value={minSize}
+              onChangeText={setMinSize}
+            />
+            <TextInput
+              style={styles.sizeInput}
+              placeholder="Max"
+              keyboardType="numeric"
+              value={maxSize}
+              onChangeText={setMaxSize}
+            />
+          </View>
+        </View>
+
+        {/* Catch Date and Time */}
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Catch Date & Time</Text>
+          <View style={styles.dateTimeContainer}>
+            <TextInput
+              style={styles.dateTimeInput}
+              placeholder="-/-/- --:--"
+              value={catchDateTime}
+              onChangeText={setCatchDateTime}
+            />
+            <TouchableOpacity style={styles.calendarButton}>
+              <Ionicons name="calendar-outline" size={20} color="#000" />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Depth of Catch */}
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Depth of Catch (m)</Text>
+          <TextInput style={styles.input} placeholder="Enter depth" keyboardType="numeric" />
+        </View>
+
+        {/* Upload Documents */}
+        <View style={styles.formGroup}>
+          <Text style={styles.label}>Upload Documents</Text>
+          <TouchableOpacity style={styles.uploadButton}>
+            <Ionicons name="cloud-upload-outline" size={24} color="#000" />
+          </TouchableOpacity>
+        </View>
+
+        {/* Checkboxes */}
+        <View style={styles.formGroup}>
+          <View style={styles.checkboxContainer}>
+            <Checkbox
+              value={redTide}
+              onValueChange={setRedTide}
+              color={redTide ? "#1a56a5" : undefined}
+            />
+            <Text style={styles.checkboxLabel}>Red Tide Present During Catch</Text>
+          </View>
+          <View style={styles.checkboxContainer}>
+            <Checkbox
+              value={compliance}
+              onValueChange={setCompliance}
+              color={compliance ? "#1a56a5" : undefined}
+            />
+            <Text style={styles.checkboxLabel}>
+              I confirm this catch complies with fishing regulations (no endangered/pregnant fish)
+            </Text>
+          </View>
+        </View>
+      </ScrollView>
+
+      {/* 🔵 Styled Submit Button */}
       <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
         <Text style={styles.submitButtonText}>Submit Catch Log</Text>
       </TouchableOpacity>
-    </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+    backgroundColor: "#1a56a5",
+  },
   container: {
     flexGrow: 1,
-    padding: 20,
-    backgroundColor: "#f5f5f5",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 20,
-    textAlign: "center",
+    padding: 16,
+    paddingBottom: 100,
   },
   formGroup: {
-    marginBottom: 20,
+    marginBottom: 16,
   },
   label: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 5,
-  },
-  mapPlaceholder: {
-    height: 150,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#e0e0e0",
-    borderRadius: 5,
-  },
-  mapText: {
     fontSize: 14,
-    color: "#888",
-    marginTop: 10,
+    fontWeight: "500",
+    color: "#fff",
+    marginBottom: 8,
+  },
+  mapContainer: {
+    height: 180,
+    backgroundColor: "#e8f4ff",
+    borderRadius: 8,
+    overflow: "hidden",
+  },
+  mapImage: {
+    width: "100%",
+    height: "100%",
   },
   input: {
-    height: 40,
+    height: 48,
     backgroundColor: "#fff",
-    borderRadius: 5,
+    borderRadius: 4,
     borderWidth: 1,
-    borderColor: "#ccc",
-    paddingHorizontal: 10,
+    borderColor: "#ddd",
+    paddingHorizontal: 12,
+    fontSize: 16,
   },
   sizeRangeContainer: {
     flexDirection: "row",
@@ -205,26 +237,42 @@ const styles = StyleSheet.create({
   },
   sizeInput: {
     width: "48%",
-    height: 40,
+    height: 48,
     backgroundColor: "#fff",
-    borderRadius: 5,
+    borderRadius: 4,
     borderWidth: 1,
-    borderColor: "#ccc",
-    paddingHorizontal: 10,
+    borderColor: "#ddd",
+    paddingHorizontal: 12,
+    fontSize: 16,
+  },
+  dateTimeContainer: {
+    flexDirection: "row",
+    height: 48,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 4,
+    alignItems: "center",
+  },
+  dateTimeInput: {
+    flex: 1,
+    height: "100%",
+    paddingHorizontal: 12,
+    fontSize: 16,
+    color: "#fff",
+  },
+  calendarButton: {
+    padding: 12,
+    justifyContent: "center",
+    alignItems: "center",
   },
   uploadButton: {
-    flexDirection: "row",
+    height: 48,
+    backgroundColor: "#fff",
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#007BFF",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-  },
-  uploadButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-    marginLeft: 10,
   },
   checkboxContainer: {
     flexDirection: "row",
@@ -233,45 +281,63 @@ const styles = StyleSheet.create({
   },
   checkboxLabel: {
     fontSize: 14,
-    color: "#333",
+    color: "#fff",
     marginLeft: 10,
     flex: 1,
   },
+  // 🔵 Submit Button
   submitButton: {
-    backgroundColor: "#007BFF",
-    paddingVertical: 15,
-    borderRadius: 5,
+    position: "absolute",
+    bottom: 20,
+    left: 20,
+    right: 20,
+    backgroundColor: "#fff",
+    paddingVertical: 16,
     alignItems: "center",
+    borderRadius: 30,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65,
+    elevation: 8,
   },
   submitButtonText: {
-    color: "#fff",
+    color: "#1a56a5",
     fontSize: 16,
     fontWeight: "bold",
   },
-  // Clean Dropdown Styles
   dropdownButton: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 14,
     backgroundColor: "#fff",
     borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
+    borderColor: "#ddd",
+    borderRadius: 4,
+    height: 48,
   },
   dropdownButtonText: {
     fontSize: 16,
     color: "#333",
   },
   dropdownList: {
-    marginTop: 5,
+    marginTop: 4,
     borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
+    borderColor: "#ddd",
+    borderRadius: 4,
     backgroundColor: "#fff",
-    zIndex: 1,
+    zIndex: 1000,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   dropdownItem: {
-    padding: 10,
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#f0f0f0",
   },
 });
