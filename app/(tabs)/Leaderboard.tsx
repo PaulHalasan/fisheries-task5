@@ -23,6 +23,16 @@ export default function Leaderboard() {
     { name: "John", points: 60, image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIESbrRy2Kc3trweDtLYkDeANMFWWlj5fiRQ&s" },
   ];
 
+  // Function to get medal color based on position
+  const getMedalColor = (index) => {
+    switch(index) {
+      case 0: return '#FFD700'; // Gold for 1st
+      case 1: return '#C0C0C0'; // Silver for 2nd
+      case 2: return '#CD7F32'; // Bronze for 3rd
+      default: return 'transparent';
+    }
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Leaderboard</Text>
@@ -52,8 +62,13 @@ export default function Leaderboard() {
         </View>
         <View style={styles.top3HorizontalList}>
           {top3Users.map((user, index) => (
-            <View key={index} style={styles.top3HorizontalItem}>
-              <Image source={{ uri: user.image }} style={styles.userImageLarge} />
+            <View key={index} style={[styles.top3HorizontalItem, { borderColor: getMedalColor(index), borderWidth: 2 }]}>
+              <View style={styles.imageContainer}>
+                <Image source={{ uri: user.image }} style={styles.userImageLarge} />
+                <View style={[styles.medalBadge, { backgroundColor: getMedalColor(index) }]}>
+                  <Text style={styles.medalText}>{index + 1}</Text>
+                </View>
+              </View>
               <Text style={styles.top3Name}>{user.name}</Text>
               <Text style={styles.top3Points}>{user.points} pts</Text>
             </View>
@@ -70,11 +85,13 @@ export default function Leaderboard() {
       <View style={styles.top10Container}>
         <Text style={styles.top10Title}>Top 10 Leaderboard</Text>
         {top10Users.map((user, index) => (
-          <View key={index} style={styles.top10Row}>
-            <Text style={styles.top10Index}>{index + 1}.</Text>
+          <View key={index} style={[styles.top10Row, index % 2 === 0 ? styles.evenRow : null]}>
+            <Text style={[styles.top10Index, index < 3 ? styles.topThreeText : null]}>{index + 1}.</Text>
             <Image source={{ uri: user.image }} style={styles.top10Image} />
             <Text style={styles.top10Name}>{user.name}</Text>
-            <Text style={styles.top10Points}>{user.points} pts</Text>
+            <View style={styles.pointsContainer}>
+              <Text style={styles.top10Points}>{user.points} pts</Text>
+            </View>
           </View>
         ))}
       </View>
@@ -86,25 +103,30 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 20,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#0927ad", 
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "bold",
-    color: "#333",
+    color: "#0927ad", // Blue color
     marginBottom: 20,
     textAlign: "center",
+    textShadowColor: 'rgba(9, 39, 173, 0.1)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   top3Container: {
     marginBottom: 20,
     backgroundColor: "#fff",
-    borderRadius: 10,
-    padding: 15,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
+    borderRadius: 15,
+    padding: 20,
+    shadowColor: "#0927ad", // Blue shadow
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 5,
+    borderWidth: 1,
+    borderColor: 'rgba(9, 39, 173, 0.1)',
   },
   tabs: {
     flexDirection: "row",
@@ -112,111 +134,165 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   tab: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    backgroundColor: "#e0e0e0",
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 25, // More rounded
+    backgroundColor: "#e0e6ff", // Light blue
+    borderWidth: 1,
+    borderColor: 'rgba(9, 39, 173, 0.2)',
   },
   activeTab: {
-    backgroundColor: "#007BFF",
+    backgroundColor: "#0927ad", // Blue
   },
   tabText: {
     fontSize: 14,
-    color: "#333",
+    color: "#0927ad", // Blue
+    fontWeight: "600",
   },
   activeTabText: {
-    color: "#fff",
+    color: "#fff", // White
     fontWeight: "bold",
   },
   top3HorizontalList: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 10,
+    marginTop: 15,
   },
   top3HorizontalItem: {
     alignItems: "center",
-    backgroundColor: "#f9f9f9",
+    backgroundColor: "#fff", // White
     padding: 15,
-    borderRadius: 10,
+    borderRadius: 15,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
+    shadowRadius: 3,
+    elevation: 3,
     width: "30%", // Each container takes 30% of the width
+  },
+  imageContainer: {
+    position: 'relative',
+    marginBottom: 10,
   },
   userImageLarge: {
     width: 80,
     height: 80,
     borderRadius: 40,
-    marginBottom: 10,
+    borderWidth: 2,
+    borderColor: "#ffbf00", // Yellow-orange border
+  },
+  medalBadge: {
+    position: 'absolute',
+    bottom: 0,
+    right: -5,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#fff',
+  },
+  medalText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 12,
   },
   top3Name: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#333",
+    color: "#0927ad", // Blue
     marginBottom: 5,
     textAlign: "center",
   },
   top3Points: {
     fontSize: 14,
-    color: "#555",
+    color: "#ffbf00", // Yellow-orange
+    fontWeight: "600",
     textAlign: "center",
   },
   startGameButton: {
-    backgroundColor: "#007BFF",
-    paddingVertical: 15,
-    borderRadius: 5,
+    backgroundColor: "#ffbf00", // Yellow-orange
+    paddingVertical: 16,
+    borderRadius: 25, // More rounded
     alignItems: "center",
     marginBottom: 20,
+    shadowColor: "#ffbf00", // Yellow-orange shadow
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 4,
   },
   startGameButtonText: {
-    color: "#fff",
-    fontSize: 16,
+    color: "#0927ad", // Blue text
+    fontSize: 18,
     fontWeight: "bold",
   },
   top10Container: {
     backgroundColor: "#fff",
-    borderRadius: 10,
-    padding: 15,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
+    borderRadius: 15,
+    padding: 20,
+    shadowColor: "#0927ad", // Blue shadow
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 5,
+    borderWidth: 1,
+    borderColor: 'rgba(9, 39, 173, 0.1)',
   },
   top10Title: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
-    color: "#333",
-    marginBottom: 10,
+    color: "#0927ad", // Blue
+    marginBottom: 15,
+    paddingBottom: 10,
+    borderBottomWidth: 2,
+    borderBottomColor: "#ffbf00", // Yellow-orange border
   },
   top10Row: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 10,
+    paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
+    borderBottomColor: "#e0e6ff", // Light blue
+  },
+  evenRow: {
+    backgroundColor: 'rgba(9, 39, 173, 0.03)', // Very light blue tint for even rows
   },
   top10Index: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#333",
+    color: "#0927ad", // Blue
     marginRight: 10,
+    width: 30,
+    textAlign: 'center',
+  },
+  topThreeText: {
+    color: "#ffbf00", // Yellow-orange for top 3
   },
   top10Image: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    marginRight: 10,
+    marginRight: 15,
+    borderWidth: 1,
+    borderColor: "#ffbf00", // Yellow-orange border
   },
   top10Name: {
     fontSize: 16,
-    color: "#333",
+    color: "#0927ad", // Blue
     flex: 1, // Ensures the name takes up available space
+    fontWeight: "500",
+  },
+  pointsContainer: {
+    backgroundColor: 'rgba(255, 191, 0, 0.15)', // Light yellow-orange background
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 12,
   },
   top10Points: {
     fontSize: 14,
-    color: "#555",
+    color: "#0927ad", // Blue
+    fontWeight: "600",
   },
 });
