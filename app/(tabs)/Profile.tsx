@@ -61,7 +61,7 @@ export default function Profile() {
             <Text style={styles.sectionTitle}>Leaderboard</Text>
           </View>
           <View style={styles.leaderboardContent}>
-            <Text style={styles.leaderboardText}>Your regional rank: #7</Text>
+            <Text style={styles.leaderboardText}>Your regional rank: #10</Text>
             <TouchableOpacity
               style={styles.viewButton}
               onPress={() => handleRouteToLeaderboard()}
@@ -134,19 +134,19 @@ export default function Profile() {
             <Text style={styles.redeemTitle}>Redeem Your Points</Text>
             {[
               {
-                icon: "document-text-outline",
+                icon: "document-text-outline" as const,
                 title: "Registration Certification",
                 description: "Fast-track your municipal registration process",
                 cost: "200 points",
               },
               {
-                icon: "flash-outline",
+                icon: "flash-outline" as const,
                 title: "Fuel Subsidy",
                 description: "Get 5% discount on your next fuel purchase",
                 cost: "500 points",
               },
               {
-                icon: "ribbon-outline",
+                icon: "ribbon-outline" as const,
                 title: "EU Certification Fee",
                 description: "Claim your EU Certification for free",
                 cost: "1000 points",
@@ -164,8 +164,11 @@ export default function Profile() {
                       </View>
                     </View>
                   </View>
-                  <TouchableOpacity style={styles.playGameButton}>
-                    <Text style={styles.playGameButtonText}>Play game</Text>
+                  <TouchableOpacity
+                    style={styles.playGameButton}
+                    onPress={() => router.push("/GamePage1")} // Redirect to GamePage1
+                  >
+                    <Text style={styles.playGameButtonText}>Play Game</Text>
                   </TouchableOpacity>
                 </View>
               </View>
