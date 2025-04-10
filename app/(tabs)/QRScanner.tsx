@@ -77,11 +77,10 @@ export default function QRScanner() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "linear-gradient(to bottom right, #004aad, #007aff)",
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "#0927ad", // Solid background color
     padding: 20,
-    backgroundColor: "#003f7d",
   },
   title: {
     fontSize: 22,

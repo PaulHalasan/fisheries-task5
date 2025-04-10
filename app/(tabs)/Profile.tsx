@@ -89,7 +89,10 @@ export default function Profile() {
                 <Ionicons name="checkmark-circle" size={18} color="#4AFF83" />
                 <Text style={styles.complianceItemText}>{item}</Text>
                 {index !== 3 ? (
-                  <TouchableOpacity style={styles.complianceViewButton}>
+                  <TouchableOpacity
+                    style={styles.complianceViewButton}
+                    onPress={() => router.push("/Certifications")} // Navigate to Certifications
+                  >
                     <Text style={styles.complianceViewButtonText}>View</Text>
                   </TouchableOpacity>
                 ) : (

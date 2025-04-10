@@ -12,7 +12,7 @@ export default function TabsLayout() {
         tabBarInactiveTintColor: "#ccc",
         tabBarShowLabel: false,
         tabBarIconStyle: {
-          marginTop: 0,
+          marginTop: 10,
         },
         tabBarStyle: {
           height: 60,

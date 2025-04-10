@@ -32,6 +32,13 @@ export default function RootLayout() {
               headerShown: true,
             }}
           />
+          <Stack.Screen
+            name="Certifications"
+            options={{
+              title: "Certifications",
+              headerShown: true,
+            }}
+          />
         </Stack>
       )}
     </>

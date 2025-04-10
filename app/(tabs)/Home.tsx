@@ -308,30 +308,32 @@ export default function Home() {
             </ScrollView>
             
             {/* Tide Forecast */}
-            <View style={styles.tideContainer}>
+            <View style={[styles.blueContainer, styles.lighterContainer]}>
               <View style={styles.centeredHeader}>
-                <Text style={styles.subHeaderText}>Tide Forecast</Text>
-                <Text style={styles.tideTimeText}>Next High Tide: 4:35PM</Text>
+                <Text style={styles.headerText}>Tide Forecast</Text>
+                <View style={styles.analyticsToggle}>
+                  <Text style={styles.analyticsToggleText}>High Tide</Text>
+                </View>
               </View>
               
               <LineChart
                 data={tideData}
-                width={350}
+                width={300}
                 height={150}
                 chartConfig={{
-                  backgroundGradientFrom: "#1E4289",
-                  backgroundGradientTo: "#1E4289",
+                  backgroundGradientFrom: "#283cb4",
+                  backgroundGradientTo: "#283cb4",
                   decimalPlaces: 0,
                   color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
                   labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
                   style: {
-                    borderRadius: 0
+                    borderRadius: 0,
                   },
                   propsForDots: {
                     r: "5",
                     strokeWidth: "2",
-                    stroke: "#ffa726"
-                  }
+                    stroke: "#ffa726",
+                  },
                 }}
                 bezier
                 style={styles.chart}
@@ -344,49 +346,45 @@ export default function Home() {
             </View>
           </View>
           
-          {/* Catch Analytics Container */}
-          <View style={styles.blueContainer}>
+          {/* Catch Analytics */}
+          <View style={[styles.blueContainer, styles.lighterContainer, styles.lighterContainer2]}>
             <View style={styles.centeredHeader}>
               <Text style={styles.headerText}>Catch Analytics</Text>
-              <TouchableOpacity 
-                style={[
-                  styles.analyticsToggle,
-                  activeAnalyticsTab === "Weekly" && styles.activeAnalyticsToggle
-                ]}
-              >
+              <View style={styles.analyticsToggle}>
                 <Text style={styles.analyticsToggleText}>Weekly</Text>
-              </TouchableOpacity>
+              </View>
             </View>
             
             <LineChart
               data={catchAnalyticsData}
-              width={350}
-              height={220}
+              width={300}
+              height={150}
               chartConfig={{
-                backgroundGradientFrom: "#fff",
-                backgroundGradientTo: "#fff",
+                backgroundGradientFrom: "#F5F5F5",
+                backgroundGradientTo: "#F5F5F5",
                 decimalPlaces: 0,
-                color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-                labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
                 style: {
-                  borderRadius: 16
+                  borderRadius: 0,
                 },
                 propsForDots: {
                   r: "5",
-                  strokeWidth: "2"
-                }
+                  strokeWidth: "2",
+                  stroke: "#ffa726",
+                },
               }}
               bezier
-              style={styles.analyticsChart}
+              style={styles.chart}
             />
             
             <View style={styles.yearLegend}>
               <View style={styles.legendItem}>
-                <View style={[styles.legendDot, {backgroundColor: "rgb(50, 100, 200)"}]} />
+                <View style={[styles.legendDot, { backgroundColor: "rgb(50, 100, 200)" }]} />
                 <Text style={styles.yearText}>2021</Text>
               </View>
               <View style={styles.legendItem}>
-                <View style={[styles.legendDot, {backgroundColor: "rgb(255, 204, 0)"}]} />
+                <View style={[styles.legendDot, { backgroundColor: "rgb(255, 204, 0)" }]} />
                 <Text style={styles.yearText}>2020</Text>
               </View>
             </View>
@@ -404,7 +402,7 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
-    backgroundColor: "#0D2B67",
+    backgroundColor: "#0927ad",
   },
   container: {
     flex: 1,
@@ -621,6 +619,7 @@ const styles = StyleSheet.create({
   chart: {
     marginVertical: 8,
     borderRadius: 16,
+    paddingBottom: 5,
   },
   legendContainer: {
     flexDirection: "row",
@@ -696,5 +695,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     height: "100%",
+  },
+  lighterContainer: {
+    backgroundColor: "#223db5",
+    borderRadius: 15,
+    padding: 15,
+    marginBottom: 10,
+  },
+  lighterContainer2: {
+    width: "90%",
   },
 });

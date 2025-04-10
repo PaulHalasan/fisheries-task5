@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   StatusBar,
+  Image
 } from "react-native";
 import { useRouter } from "expo-router";
 
@@ -22,6 +23,12 @@ export default function LandingPage() {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#0927ad" />
+
+      {/* Logo */}
+      <Image
+        source={require("../assets/logo_tale.jpg")} // Update the path to your logo file
+        style={styles.logo}
+      />
 
       <Text style={styles.title}>Welcome Back</Text>
       <Text style={styles.subtitle}>Sign in to your account</Text>
@@ -133,5 +140,13 @@ const styles = StyleSheet.create({
     color: "#DB4437",
     fontSize: 16,
     fontWeight: "600",
+  },
+  logo: {
+    width: 100, // Adjust the width of the logo
+    height: 100, // Adjust the height of the logo
+    marginBottom: 20, // Add spacing between the logo and the title
+    borderRadius: 50, // Make the logo circular
+    borderWidth: 2, // Border width for the circular logo
+    borderColor: "#ffbf00", // Border color for the circular logo
   },
 });
